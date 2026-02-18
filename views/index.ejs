@@ -7,101 +7,64 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand__logo">★</div>
-      <div>
-        <div class="brand__title">Good News Machine</div>
-        <div class="brand__tag">pink • retro • user-powered</div>
-      </div>
-    </div>
-  </header>
 
-  <main class="container">
-    <% if (mostRecent) { %>
-      <section class="card card--featured">
-        <div class="card__kicker">Most recent drop</div>
-        <div class="card__big"><%= mostRecent.message %></div>
-        <div class="card__meta">
-          <span class="pill"><%= mostRecent.dateLabel %></span>
-          <span class="pill">Votes: <strong><%= mostRecent.votes %></strong></span>
+  <header>
+  <h1>Fall and Spring Service Fairs</h1>
+  <div class="topnav">
+      <input type="text" placeholder="Search..">
+  </div>
+  <p>Welcome to the Westridge Service Fairs! Explore the service journeys of our wonderful juniors and seniors!</p>
+  <!-- Add sorting options -->
+  
+  <div class="filter-section">
+    <label for="service-category" style="font-weight: 600; color: #47763B;">Filter by:</label>
+      <select name="service-category" id="service-category" onchange="window.location.href='/?category=' + this.value">
+      <option value="cts" <%= currentCategory === 'cts' ? 'selected' : '' %>>Commitment to Service (CTS)</option>
+      <option value="cap" <%= currentCategory === 'cap' ? 'selected' : '' %>>Community Action Project (CAP)</option>
+      <hr>
+        <option value="all" <%= !currentCategory || currentCategory === 'all' ? 'selected' : '' %>>All Projects</option>
+        <option value="no-poverty" <%= currentCategory === 'no-poverty' ? 'selected' : '' %>>No Poverty</option>
+        <option value="zero-hunger" <%= currentCategory === 'zero-hunger' ? 'selected' : '' %>>Zero Hunger</option>
+        <option value="good-health" <%= currentCategory === 'good-health' ? 'selected' : '' %>>Good Health and Well-Being</option>
+        <option value="quality-education" <%= currentCategory === 'quality-education' ? 'selected' : '' %>>Quality Education</option>
+        <option value="gender-equality" <%= currentCategory === 'gender-equality' ? 'selected' : '' %>>Gender Equality</option>
+        <option value="clean-water" <%= currentCategory === 'clean-water' ? 'selected' : '' %>>Clean Water and Sanitization</option>
+        <option value="clean-energy" <%= currentCategory === 'clean-energy' ? 'selected' : '' %>>Affordable and Clean Energy</option>
+        <option value="economic-growth" <%= currentCategory === 'economic-growth' ? 'selected' : '' %>>Decent Work and Economic Growth</option>
+        <option value="innovation" <%= currentCategory === 'innovation' ? 'selected' : '' %>>Industry, Innovation, and Infrastructure</option>
+        <option value="reduced-inequalities" <%= currentCategory === 'reduced-inequalities' ? 'selected' : '' %>>Reduced Inequalities</option>
+        <option value="sustainable-cities" <%= currentCategory === 'sustainable-cities' ? 'selected' : '' %>>Sustainable Cities and Communities</option>
+        <option value="responsible-consumption" <%= currentCategory === 'responsible-consumption' ? 'selected' : '' %>>Responsible Consumption and Production</option>
+        <option value="climate-action" <%= currentCategory === 'climate-action' ? 'selected' : '' %>>Climate Action</option>
+        <option value="life-below-water" <%= currentCategory === 'life-below-water' ? 'selected' : '' %>>Life Below Water</option>
+        <option value="life-on-land" <%= currentCategory === 'life-on-land' ? 'selected' : '' %>>Life on Land</option>
+        <option value="peace-justice" <%= currentCategory === 'peace-justice' ? 'selected' : '' %>>Peace, Justice, and Strong Institutions</option>
+        <option value="partnerships" <%= currentCategory === 'partnerships' ? 'selected' : '' %>>Partnerships for the Goals</option>
+      </select>
+</div>
+</header>
+
+<!--Create a bunch of project cards-->
+<main class="container">
+    <div class="card-grid"> <% if (projects && projects.length > 0) { %>
+      <% projects.forEach(project => { %>
+        
+        <div class="card">
+          <img src="<%= project.image || 'https://via.placeholder.com/300x200?text=No+Image' %>" alt="Project Image">
+          
+          <h3><%= project.projectName %></h3>
+          <p class="category-tag"><%= project.category %></p>
+          
+          <a href="/project/<%= project._id %>" class="view-btn">View Details</a>
         </div>
-      </section>
+
+      <% }) %>
     <% } else { %>
-      <section class="card card--featured">
-        <div class="card__kicker">No entries yet</div>
-        <div class="card__big">Be the first to post some good news ✨</div>
-      </section>
+      <p style="text-align: center; grid-column: 1/-1;">No projects found for this category.</p>
     <% } %>
 
-    <section class="grid">
-      <section class="card">
-        <h2 class="h2">Submit good news</h2>
-        <form action="/goodnews" method="post" class="form">
-          <label class="label" for="message">What’s the good news?</label>
-          <textarea
-            id="message"
-            name="message"
-            class="textarea"
-            maxlength="280"
-            placeholder="Example: Our class finally got MongoDB working 😭🔥"
-            required
-          ></textarea>
-          <div class="form__row">
-            <button class="btn btn--primary" type="submit">Post it</button>
-            <div class="hint">Max 280 chars. Keep it school-appropriate.</div>
-          </div>
-        </form>
-      </section>
+  </div>
+</main>
 
-      <section class="card">
-        <h2 class="h2">All good news</h2>
-
-        <div class="tableWrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Good news</th>
-                <th class="th-center">Date</th>
-                <th class="th-center">Votes</th>
-                <th class="th-center">Vote</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% entries.forEach(e => { %>
-                <tr>
-                  <td class="td-message"><%= e.message %></td>
-                  <td class="td-center"><%= e.dateLabel %></td>
-                  <td class="td-center"><strong><%= e.votes %></strong></td>
-                  <td class="td-center">
-                    <div class="vote">
-                      <form action="/goodnews/<%= e._id %>/vote" method="post">
-                        <input type="hidden" name="dir" value="up" />
-                        <button class="btn btn--vote" type="submit" aria-label="Upvote">▲</button>
-                      </form>
-                      <form action="/goodnews/<%= e._id %>/vote" method="post">
-                        <input type="hidden" name="dir" value="down" />
-                        <button class="btn btn--vote" type="submit" aria-label="Downvote">▼</button>
-                      </form>
-                    </div>
-                  </td>
-                </tr>
-              <% }) %>
-
-              <% if (entries.length === 0) { %>
-                <tr>
-                  <td colspan="4" class="empty">Nothing here yet. Start the vibe 👇</td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </section>
-  </main>
-
-  <footer class="footer">
-    Made with ✨ and MongoDB
-  </footer>
 </body>
 </html>
