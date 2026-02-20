@@ -106,7 +106,7 @@ router.get('/seed-database', async (req, res) => {
     res.status(500).send("Error seeding database: " + err.message);
   }
 });
-
+// Search functionality
 router.get("/search", async (req, res, next) => {
   try {
     const searchQuery = req.query.search || '';
