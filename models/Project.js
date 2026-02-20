@@ -10,6 +10,7 @@ const serviceFairSchema = new mongoose.Schema(
        required: true },
     image: { 
       type: String }, // URL to the image
+    search: { type: String }, // Search keywords
     semester: { type: String }, // e.g., "Fall 2025" "Spring 2026"
     description: { type: String, required: true },
     attendance: [

@@ -9,10 +9,12 @@
 
 body {
   font-family: 'Montserrat', sans-serif;
+  line-height: 1.6;
+  padding: 0 1rem;
   background-color: var(--light-gray);
   color: #333;
   margin: 0;
-  padding: 0;
+  text-align: center;
 }
 
 /* 2. Professional Grid */
@@ -85,3 +87,29 @@ body {
   object-fit: cover; /* This prevents images from squishing */
   border-radius: 0;
 }
+.topnav {
+  position: sticky;
+  top: 0;
+  background-color: var(--westridge-green);
+  padding: 1rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  img.topnav {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+  input[type="text"] {
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+  }
+  button.topnav {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+}
+

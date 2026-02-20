@@ -3,18 +3,12 @@ import { Project } from '../models/Project.js';
 
 export const router = express.Router();
 
-/*
-  GET /
-  - Most recent entry
-  - Table of all entries
-  - Create form
-*/
+
 // GALLERY PAGE: Show all projects
 router.get('/', async (req, res, next) => {
   try {
     // 1. Get the sorted category from the URL
     const selectedCategory = req.query.category || 'all';
-
     // 2. Build the filter object for MongoDB
     let filter = {};
     if (selectedCategory !== 'all') {
@@ -30,7 +24,7 @@ router.get('/', async (req, res, next) => {
       projects, 
       currentCategory: selectedCategory 
     });
-
+    
   } 
   catch (err) { 
     next(err); 
@@ -77,16 +71,16 @@ router.get('/seed-database', async (req, res) => {
     const seedProjects = [
       {
         projectName: "Reading Partners at Madison Elementary",
-        category: "quality-education",
-        description: "Weekly literacy tutoring for 2nd and 3rd grade students.",
+        category: "cap",
+        description: "Weekly literacy tutoring for 2nd and 3rd grade students. A CAP project focused on closing the reading gap in our local community.",
         image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800",
         semester: "Fall 2025",
         attendance: []
       },
       {
         projectName: "Westridge Community Garden Expansion",
-        category: "cap",
-        description: "A CAP project focused on native species and composting.",
+        category: "sustainable-cities",
+        description: "A CAP project focused on native species and composting. This project aims to enhance biodiversity and promote sustainable gardening practices.",
         image: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800",
         semester: "Spring 2026",
         attendance: []
@@ -94,7 +88,7 @@ router.get('/seed-database', async (req, res) => {
       {
         projectName: "Ocean Plastic Awareness",
         category: "cts",
-        description: "A CTS journey focused on beach cleanups and education.",
+        description: "A CTS journey focused on beach cleanups and education. This project aims to raise awareness about ocean plastic pollution and its impact on marine life.",
         image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800",
         semester: "Fall 2025",
         attendance: []
@@ -103,8 +97,8 @@ router.get('/seed-database', async (req, res) => {
 
     // Clear old data
     await Project.deleteMany({}); 
-    
-    // Insert the data
+
+    // Insert the new data
     await Project.insertMany(seedProjects);
     
     res.send("<h1>Success!</h1><p>Database seeded. <a href='/'>Go to Gallery</a></p>");
@@ -112,3 +106,23 @@ router.get('/seed-database', async (req, res) => {
     res.status(500).send("Error seeding database: " + err.message);
   }
 });
+
+router.get("/search", async (req, res, next) => {
+  try {
+    const searchQuery = req.query.search || '';
+    const projects = await Project.find({
+      projectName: { $regex: searchQuery, $options: 'i' }
+    }).sort({ projectName: 1 });
+
+    res.render('index', {
+      title: "Westridge Service Fair",
+      projects,
+      currentCategory: 'all',
+      q: searchQuery
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+  
