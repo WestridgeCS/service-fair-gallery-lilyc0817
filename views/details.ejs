@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/styles.css">
+    <title><%= project.projectName %></title>
+</head>
+<body>
+	<!-- Project Details Section -->
+    <div class="container">
+        <a href="/" class="back-link">← Back to Gallery</a>
+        
+        <header>
+            <h1><%= project.projectName %></h1>
+            <h2><%= project.presenterName %></h2>
+            <span class="pill"><%= project.program %></span>
+            <span class="pill"><%= project.goal %></span>
+            <p><strong>Semester:</strong> <%= project.semester %></p>
+        </header>
+
+        <img src="<%= project.image %>" class="featured-img">
+        
+        <div class="journey-content">
+            <h2>My Service Journey</h2>
+            <p><%= project.description %></p>
+        </div>
+    </div>
+	<!-- Attendance Check-in Section -->
+	<section class="attendance-section" style="border-top: 1px solid #eee; margin-top: 40px; padding-top: 20px;">
+  <h3 style="color: var(--westridge-green); text-transform: uppercase;">Student Check-in</h3>
+  <p>Please enter your name to log your attendance for this <strong><%= project.category %></strong> service journey.</p>
+
+  <form action="/checkin" method="POST" class="checkin-form">
+    <input type="hidden" name="projectId" value="<%= project._id %>">
+    <input type="text" name="studentName" placeholder="Your Full Name" required style="padding: 10px; border: 1px solid var(--westridge-green); width: 250px;">
+    <button type="submit" style="background: var(--westridge-green); color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: 600;">
+      LOG ATTENDANCE
+    </button>
+  </form>
+
+  <div class="attendee-list" style="margin-top: 20px;">
+    <h4>Recent Check-ins:</h4>
+    <ul>
+      <ul>
+  <% if (project.attendance && project.attendance.length > 0) { %>
+    <% project.attendance.forEach(record => { %>
+      <li>
+        <strong><%= record.studentName %></strong> 
+        <span style="color: #888; font-size: 0.8rem;">
+          — <%= record.checkInTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %>
+        </span>
+      </li>
+    <% }) %>
+  <% } else { %>
+    <li>No check-ins yet.</li>
+  <% } %>
+</ul>
+    </ul>
+  </div>
+</section>
+</body>
+</html>
