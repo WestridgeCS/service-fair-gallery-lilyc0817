@@ -7,27 +7,26 @@ export const router = express.Router();
 // GALLERY PAGE: Show all projects
 router.get('/', async (req, res, next) => {
   try {
-    // 1. Get the sorted category from the URL
-    const selectedCategory = req.query.category || 'all';
-    // 2. Build the filter object for MongoDB
-    let filter = {};
-    if (selectedCategory !== 'all') {
-      filter.category = selectedCategory;
+    const selected = req.query.category || 'all';
+
+    const filter = {};
+    if (selected !== 'all') {
+      if (selected === 'cts' || selected === 'cap') {
+        filter.program = selected;   // CTS/CAP selection
+      } else {
+        filter.goal = selected;      // UN goal selection
+      }
     }
 
-    // 3. Fetch only the projects we want, sorted alphabetically
     const projects = await Project.find(filter).sort({ projectName: 1 });
 
-    // 4. Send the data to EJS to render the page
-    res.render('index', { 
-      title: "Westridge Service Fair", 
-      projects, 
-      currentCategory: selectedCategory 
+    res.render('index', {
+      title: "Westridge Service Fair",
+      projects,
+      currentCategory: selected
     });
-    
-  } 
-  catch (err) { 
-    next(err); 
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -42,8 +41,10 @@ router.get('/project/:id', async (req, res, next) => {
 // CREATE: Handle form submission to add a new project
 router.post('/add-project', async (req, res, next) => {
   try {
-    const { projectName, category, description, image, semester } = req.body;
-    await Project.create({ projectName, category, description, image, semester });
+    const { projectName, presenterName, program, goal, description, image, semester } = req.body;
+
+    await Project.create({ projectName, presenterName, program, goal, description, image, semester });
+
     res.redirect('/');
   } catch (err) { next(err); }
 });
@@ -71,7 +72,9 @@ router.get('/seed-database', async (req, res) => {
     const seedProjects = [
       {
         projectName: "Reading Partners at Madison Elementary",
-        category: "cap",
+        presenterName: "Alice Johnson",
+        program: "cap",
+        goal: "quality-education",
         description: "Weekly literacy tutoring for 2nd and 3rd grade students. A CAP project focused on closing the reading gap in our local community.",
         image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800",
         semester: "Fall 2025",
@@ -79,7 +82,9 @@ router.get('/seed-database', async (req, res) => {
       },
       {
         projectName: "Westridge Community Garden Expansion",
-        category: "sustainable-cities",
+        presenterName: "Mary Smith",
+        program: "cap",
+        goal: "sustainable-cities",
         description: "A CAP project focused on native species and composting. This project aims to enhance biodiversity and promote sustainable gardening practices.",
         image: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800",
         semester: "Spring 2026",
@@ -87,7 +92,9 @@ router.get('/seed-database', async (req, res) => {
       },
       {
         projectName: "Ocean Plastic Awareness",
-        category: "cts",
+        presenterName: "Bobby Brown",
+        program: "cts",
+        goal: "life-below-water",
         description: "A CTS journey focused on beach cleanups and education. This project aims to raise awareness about ocean plastic pollution and its impact on marine life.",
         image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800",
         semester: "Fall 2025",
@@ -109,20 +116,38 @@ router.get('/seed-database', async (req, res) => {
 // Search functionality
 router.get("/search", async (req, res, next) => {
   try {
-    const searchQuery = req.query.search || '';
-    const projects = await Project.find({
-      projectName: { $regex: searchQuery, $options: 'i' }
-    }).sort({ projectName: 1 });
+    const q = (req.query.search || "").trim();
 
-    res.render('index', {
+    const filter = q
+      ? {
+          $or: [
+            { projectName: { $regex: q, $options: "i" } },
+            { presenterName: { $regex: q, $options: "i" } },
+          ],
+        }
+      : {};
+
+    const projects = await Project.find(filter).sort({ projectName: 1 });
+
+    res.render("index", {
       title: "Westridge Service Fair",
       projects,
-      currentCategory: 'all',
-      q: searchQuery
+      currentCategory: "all", // IMPORTANT: index.ejs expects this
+      q,
     });
   } catch (err) {
-    next(err);
+    next(err); // IMPORTANT: make sure your route has next
   }
 });
+//Add a St. John route that lists all of the attendance in a table
+router.post("/attendance", async(req, res) =>{
+  try{
+    const projects = await Project.find({});
+    res.render('attendance', { projects });
+  }
+  catch(err){
+    next(err);
+  }
+})
 
   

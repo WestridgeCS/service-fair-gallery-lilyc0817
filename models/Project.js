@@ -5,9 +5,19 @@ const serviceFairSchema = new mongoose.Schema(
     projectName: { 
       type: String, 
       required: true },
-    category: {
-       type: String, 
-       required: true },
+    presenterName: {
+      type: String,
+      required: true
+    },
+    program: {
+      type: String,
+      enum: ['cts', 'cap'],
+      required: true
+    },
+    goal: {
+      type: String,
+      required: true
+    },
     image: { 
       type: String }, // URL to the image
     search: { type: String }, // Search keywords

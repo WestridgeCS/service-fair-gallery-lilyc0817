@@ -25,10 +25,11 @@
   <div class="filter-section">
     <label for="service-category" style="font-weight: 600; color: #47763B;">Filter by:</label>
       <select name="service-category" id="service-category" onchange="window.location.href='/?category=' + this.value">
+      <option value="all" <%= !currentCategory || currentCategory === 'all' ? 'selected' : '' %>>All Projects</option>
+      <hr>
       <option value="cts" <%= currentCategory === 'cts' ? 'selected' : '' %>>Commitment to Service (CTS)</option>
       <option value="cap" <%= currentCategory === 'cap' ? 'selected' : '' %>>Community Action Project (CAP)</option>
       <hr>
-        <option value="all" <%= !currentCategory || currentCategory === 'all' ? 'selected' : '' %>>All Projects</option>
         <option value="no-poverty" <%= currentCategory === 'no-poverty' ? 'selected' : '' %>>No Poverty</option>
         <option value="zero-hunger" <%= currentCategory === 'zero-hunger' ? 'selected' : '' %>>Zero Hunger</option>
         <option value="good-health" <%= currentCategory === 'good-health' ? 'selected' : '' %>>Good Health and Well-Being</option>
@@ -46,7 +47,9 @@
         <option value="life-on-land" <%= currentCategory === 'life-on-land' ? 'selected' : '' %>>Life on Land</option>
         <option value="peace-justice" <%= currentCategory === 'peace-justice' ? 'selected' : '' %>>Peace, Justice, and Strong Institutions</option>
         <option value="partnerships" <%= currentCategory === 'partnerships' ? 'selected' : '' %>>Partnerships for the Goals</option>
-      </select>
+        <hr>
+        </select>
+      
 </div>
 </header>
 
@@ -59,8 +62,10 @@
           <img src="<%= project.image || 'https://via.placeholder.com/300x200?text=No+Image' %>" alt="Project Image">
           
           <h3><%= project.projectName %></h3>
-          <p class="category-tag"><%= project.category %></p>
-          
+          <h4><%= project.presenterName %></h4>
+          <p class="category-tag"><%= project.program %></p>
+          <p class=""><%= project.goal %></p>
+
           <a href="/project/<%= project._id %>" class="view-btn">View Details</a>
         </div>
 

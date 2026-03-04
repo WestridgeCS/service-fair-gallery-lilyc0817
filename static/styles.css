@@ -112,4 +112,23 @@ body {
     cursor: pointer;
   }
 }
+/*style the back button*/
+.back-link {
+  display: inline-block;
+  margin: 18px 0;
+  padding: 10px 14px;
+  border: 1px solid var(--westridge-green);
+  color: var(--westridge-green);
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  transition: 0.2s ease;
+  background: white;
+}
 
+.back-link:hover {
+  background: var(--westridge-green);
+  color: white;
+}

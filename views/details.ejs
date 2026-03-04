@@ -7,11 +7,13 @@
 <body>
 	<!-- Project Details Section -->
     <div class="container">
-        <a href="/">← Back to Gallery</a>
+        <a href="/" class="back-link">← Back to Gallery</a>
         
         <header>
             <h1><%= project.projectName %></h1>
-            <span class="pill"><%= project.category %></span>
+            <h2><%= project.presenterName %></h2>
+            <span class="pill"><%= project.program %></span>
+            <span class="pill"><%= project.goal %></span>
             <p><strong>Semester:</strong> <%= project.semester %></p>
         </header>
 
